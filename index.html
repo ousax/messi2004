@@ -4,15 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>FCA Shop</title>
+  <link href="style.css" rel="stylesheet">
 </head>
 <body class="light-mode">
   <button class="toggle-btn" id="modeToggleBtn" aria-label="Toggle dark mode">🌙</button>
-  
   <header class="site-header">
     <h1>Bienvenue dans notre boutique</h1>
     <p>Des produits authentiques sélectionnés avec soin rien que pour vous.</p>
   </header>
-  
   <div class="controls">
     <div class="search-bar">
       <input type="text" id="searchInput" placeholder="Rechercher des produits...">
@@ -28,15 +27,12 @@
       </select>
     </div>
   </div>
-  
   <div id="product-list"></div>
-  
   <div class="pagination">
     <button id="prevPage" disabled>Précédent</button>
     <span id="pageInfo">Page 1</span>
     <button id="nextPage">Suivant</button>
   </div>
-  
   <div class="modal" id="productModal">
     <div class="modal-content">
       <button class="close-modal" id="closeModal">&times;</button>
@@ -47,9 +43,7 @@
       <button class="add-to-cart-btn" id="modalAddToCart">Ajouter au panier</button>
     </div>
   </div>
-  
   <div class="toast" id="toastNotification"></div>
-  
-  
+  <script src="script.js"></script>
 </body>
 </html>
