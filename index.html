@@ -1,40 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FCA Shop - Premium</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FCA Shop</title>
 </head>
 <body class="light-mode">
-  <div class="action-buttons">
-    <button class="action-btn wishlist" id="wishlistButton">❤️ <span class="badge" id="wishlistCounter">0</span></button>
-    <button class="action-btn" id="cartButton">🛒 <span class="badge" id="cartCounter">0</span></button>
-  </div>
-  <div class="sidebar" id="wishlistSidebar">
-    <h2>Votre Wishlist</h2>
-    <div id="wishlistItems"></div>
-    <div class="sidebar-total" id="wishlistTotal"></div>
-  </div>
-  <div class="sidebar" id="cartSidebar">
-    <h2>Votre Panier</h2>
-    <div id="cartItems"></div>
-    <div class="sidebar-total">Total: <span id="cartTotal">0</span> DH</div>
-    <button id="checkoutBtn" style="width:100%;padding:10px;background:var(--button-bg);color:white;border:none;border-radius:4px;">
-      Passer la Commande
-    </button>
-  </div>
+  <button class="toggle-btn" id="modeToggleBtn" aria-label="Toggle dark mode">🌙</button>
+  
   <header class="site-header">
     <h1>Bienvenue dans notre boutique</h1>
     <p>Des produits authentiques sélectionnés avec soin rien que pour vous.</p>
   </header>
-  <div class="category-tabs">
-    <button class="category-tab active" data-category="all">Tous</button>
-    <button class="category-tab" data-category="food">Nourriture</button>
-    <button class="category-tab" data-category="cosmetics">Cosmétiques</button>
-    <button class="category-tab" data-category="artisanat">Artisanat</button>
+  
+  <div class="controls">
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="Rechercher des produits...">
+    </div>
+    <div class="sort-options">
+      <select id="sortSelect">
+        <option value="name-asc">Trier par: Nom (A-Z)</option>
+        <option value="name-desc">Trier par: Nom (Z-A)</option>
+        <option value="price-asc">Trier par: Prix (Croissant)</option>
+        <option value="price-desc">Trier par: Prix (Décroissant)</option>
+        <option value="rating-asc">Trier par: Note (Croissante)</option>
+        <option value="rating-desc">Trier par: Note (Décroissante)</option>
+      </select>
+    </div>
   </div>
+  
   <div id="product-list"></div>
-  <script src="script.js">
+  
+  <div class="pagination">
+    <button id="prevPage" disabled>Précédent</button>
+    <span id="pageInfo">Page 1</span>
+    <button id="nextPage">Suivant</button>
+  </div>
+  
+  <div class="modal" id="productModal">
+    <div class="modal-content">
+      <button class="close-modal" id="closeModal">&times;</button>
+      <img class="modal-image" id="modalImage" src="" alt="">
+      <h2 id="modalName"></h2>
+      <p id="modalPrice"></p>
+      <p id="modalRating"></p>
+      <button class="add-to-cart-btn" id="modalAddToCart">Ajouter au panier</button>
+    </div>
+  </div>
+  
+  <div class="toast" id="toastNotification"></div>
+  
+  
 </body>
 </html>
