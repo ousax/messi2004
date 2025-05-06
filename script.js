@@ -1,58 +1,173 @@
-const rawProducts = [
-    ["Chaussures Antigravité", "https://image.made-in-china.com/202f0j00uvhiLEMdARkA/Kangoo-Jump-Shoes-Kangaroo-Anti-Gravity-Running-Jumping-Bouncing-Shoes.webp", "DH"],
-    ["Miel ZCH", "https://media.istockphoto.com/id/598241944/fr/photo/miel-en-pot-et-bouquet-de-lavande-s%C3%A8che.jpg?s=612x612&w=0&k=20&c=N8QEPGZuQWQMjRHBW0RgRMn-heqdqZiThVCDq2H990g=", "DH"],
-    ["Dattes el mejhoul", "https://media.istockphoto.com/id/1178070137/fr/photo/dates-medjool-frais-dans-un-bol-fond-gris-copiez-lespace.jpg?s=612x612&w=0&k=20&c=KSqmRxA-pKyP14HTQaT3NuGxHE5ZJ5SGpV047HwRbWM=", "DH"],
-    ["Jus Dattes el mejhoul", "https://thumbs.dreamstime.com/b/boisson-de-jus-dattes-d%C3%A9licieux-avec-des-fra%C3%AEches-sur-table-en-bois-une-photo-closeup-r%C3%A9v%C3%A8le-un-verre-sa-riche-teinte-d-ambre-365116944.jpg", "DH"],
-    ["Huile d'Argan", "https://img.passeportsante.net/1200x675/2021-05-03/i104245-huile-argan.webp", "DH"],
-    ["Amandes Maroc", "https://www.bladi.net/img/logo/amande-americaine-maroc.jpg", "DH"],
-    ["Safran Premium", "https://m.media-amazon.com/images/I/71Prfvax+PS._AC_UF1000,1000_QL80_.jpg", "DH"],
-    ["Eau de Rose", "https://media.istockphoto.com/id/506669699/fr/photo/eau-de-rose-rose-et-de-magnifiques-fleurs-macro-horizontal.jpg?s=612x612&w=0&k=20&c=8SS9jnyWel63PyxvAEnwwuCNumdVQSqxN_1qla8FPTk=", "DH"],
-    ["Pistaches Grillées", "https://www.goji.ma/cdn/shop/products/Pistachesgrilleessaleesbio.jpg?v=1672009454&width=1445", "DH"]
-  ];
-
-  function getRandomPrice(min, max) {
-    return (Math.random() * (max - min) + min).toFixed(2);
-  }
-
-  function getRandomRating() {
-    return (Math.random() * 1 + 4).toFixed(1);
-  }
-
-  function renderProducts(products) {
-    const productList = document.getElementById("product-list");
-    products.forEach(([name, image_url, currency]) => {
-      const price = getRandomPrice(5, 130);
-      const rating = getRandomRating();
-
-      const card = document.createElement("div");
-      card.className = "product-card";
-      card.innerHTML = `
-        <img src="${image_url}" class="product-image" alt="${name}">
-        <div class="product-name">${name}</div>
-        <div class="product-price">${price} ${currency}</div>
-        <div class="product-rating">⭐ ${rating}</div>
-      `;
-      productList.appendChild(card);
+ const rawProducts = [
+      ["Chaussures Antigravité", "Kangoo.avif", "DH", "artisanat"],
+      ["Miel ZCH", "miel.jpg", "DH", "food"],
+      ["Dattes el mejhoul", "dattes.jpg", "DH", "food"],
+      ["Jus Dattes el mejhoul", "jusdattes.jpg", "DH", "food"],
+      ["Huile d'Argan", "zitargan.webp", "DH", "cosmetics"],
+      ["Amandes Maroc", "amandes.jpg", "DH", "food"],
+      ["Safran Premium", "safran_.jpg", "DH", "food"],
+      ["Eau de Rose", "eau.jpg", "DH", "cosmetics"],
+      ["Pistaches Grillées", "pistaches.jpg", "DH", "food"],
+      ["Thé Marocain", "dekkka.jpg", "DH", "food"],
+      ["Couscous Fin", "COUSCOUS.jpg", "DH", "food"],
+      ["Tajine en Céramique", "tajines.png", "DH", "artisanat"],
+      ["Savon Noir", "savon.jpg", "DH", "cosmetics"],
+      ["Huile d'Olive", "zitzitoun.jpg", "DH", "food"],
+      ["Tapis Berbère", "zarbia.jpg", "DH", "artisanat"]
+    ];
+    let products = rawProducts.map((product, index) => ({
+      id: index + 1,
+      name: product[0],
+      image_url: product[1],
+      currency: product[2],
+      category: product[3],
+      price: (Math.random() * 100 + 20).toFixed(2),
+      rating: (Math.random() * 1 + 4).toFixed(1)
+    }));
+    let currentPage = 1;
+    const productsPerPage = 4;
+    let filteredProducts = [...products];
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    let wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
+    // bda men hna
+    document.addEventListener("DOMContentLoaded", () => {
+      renderProducts();
+      updateCart();
+      updateWishlist();
+      
+      
+      document.getElementById('cartButton').addEventListener('click', toggleCart);
+      document.getElementById('wishlistButton').addEventListener('click', toggleWishlist);
+      document.getElementById('checkoutBtn').addEventListener('click', checkout);
+      
+      // tabs categ
+      document.querySelectorAll('.category-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+          filterByCategory(tab.dataset.category);
+        });
+      });
     });
-  }
 
-  function applyTheme(mode) {
-    document.body.classList.remove("light-mode", "dark-mode");
-    document.body.classList.add(mode);
-    document.getElementById("modeToggleBtn").textContent = mode === "dark-mode" ? "🌞" : "🌙";
-    localStorage.setItem("darkMode", mode === "dark-mode");
-  }
+    // dial cart 
+    function updateCart() {
+      document.getElementById('cartCounter').textContent = cart.length;
+      
+      const cartItemsEl = document.getElementById('cartItems');
+      cartItemsEl.innerHTML = cart.map(item => `
+        <div class="sidebar-item">
+          <img src="${item.image_url}" alt="${item.name}">
+          <div>
+            <h4>${item.name}</h4>
+            <p>${item.price} ${item.currency}</p>
+            <button onclick="removeFromCart(${item.id})" style="color:red;background:none;border:none;cursor:pointer;padding:0;">
+              Supprimer
+            </button>
+          </div>
+        </div>
+      `).join('');
+      
+      const total = cart.reduce((sum, item) => sum + parseFloat(item.price), 0);
+      document.getElementById('cartTotal').textContent = total.toFixed(2);
+      
+      localStorage.setItem('cart', JSON.stringify(cart));
+    }
 
-  function toggleDarkMode() {
-    const isDark = document.body.classList.contains("dark-mode");
-    applyTheme(isDark ? "light-mode" : "dark-mode");
-  }
+    function addToCart(product) {
+      cart.push({...product});
+      updateCart();
+      showToast(`${product.name} ajouté au panier!`);
+    }
 
-  document.addEventListener("DOMContentLoaded", () => {
-    const prefersDark = localStorage.getItem("darkMode") === "true";
-    applyTheme(prefersDark ? "dark-mode" : "light-mode");
+    function removeFromCart(productId) {
+      cart = cart.filter(item => item.id !== productId);
+      updateCart();
+      showToast('Produit supprimé');
+    }
 
-    renderProducts(rawProducts);
+    function toggleCart() {
+      document.getElementById('cartSidebar').classList.toggle('open');
+      document.getElementById('wishlistSidebar').classList.remove('open');
+    }
 
-    document.getElementById("modeToggleBtn").addEventListener("click", toggleDarkMode);
-  });
+    //wishlist functionnalites
+    function updateWishlist() {
+      document.getElementById('wishlistCounter').textContent = wishlist.length;
+      
+      const wishlistItemsEl = document.getElementById('wishlistItems');
+      wishlistItemsEl.innerHTML = wishlist.map(item => `
+        <div class="sidebar-item">
+          <img src="${item.image_url}" alt="${item.name}">
+          <div>
+            <h4>${item.name}</h4>
+            <p>${item.price} ${item.currency}</p>
+            <div style="display:flex;gap:10px;">
+              <button onclick="addToCartFromWishlist(${item.id})" style="padding:5px 10px;background:var(--button-bg);color:white;border:none;border-radius:4px;">
+                Ajouter au panier
+              </button>
+              <button onclick="removeFromWishlist(${item.id})" style="padding:5px 10px;background:var(--wishlist-color);color:white;border:none;border-radius:4px;">
+                Supprimer
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+      
+      localStorage.setItem('wishlist', JSON.stringify(wishlist));
+    }
+
+    function toggleWishlist() {
+      document.getElementById('wishlistSidebar').classList.toggle('open');
+      document.getElementById('cartSidebar').classList.remove('open');
+    }
+
+    function toggleWishlistItem(product) {
+      const index = wishlist.findIndex(item => item.id === product.id);
+      if (index === -1) {
+        wishlist.push({...product});
+        showToast(`${product.name} ajouté à la wishlist!`);
+      } else {
+        wishlist.splice(index, 1);
+        showToast(`${product.name} retiré de la wishlist`);
+      }
+      updateWishlist();
+      renderProducts(); // Update heart icons
+    }
+
+    function addToCartFromWishlist(productId) {
+      const product = wishlist.find(item => item.id === productId);
+      addToCart(product);
+    }
+
+    function removeFromWishlist(productId) {
+      wishlist = wishlist.filter(item => item.id !== productId);
+      updateWishlist();
+      renderProducts(); // icon heart update hna 
+    }
+
+    // filter dial category 
+    function filterByCategory(category) {
+      if (category === 'all') {
+        filteredProducts = [...products];
+      } else {
+        filteredProducts = products.filter(product => product.category === category);
+      }
+      currentPage = 1;
+      renderProducts();
+    }
+
+    //check outttttt
+    function checkout() {
+      if (cart.length === 0) {
+        showToast('Votre panier est vide!');
+        return;
+      }
+      
+      if (confirm(`Confirmer la commande de ${cart.length} articles pour ${document.getElementById('cartTotal').textContent} DH?`)) {
+        cart = [];
+        updateCart();
+        showToast('Commande passée avec succès!');
+        document.getElementById('cartSidebar').classList.remove('open');
+      }
+    }
