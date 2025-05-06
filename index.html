@@ -1,19 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>FCA Shop</title>
-  <link href="style.css" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FCA Shop - Premium</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body class="light-mode">
-  <button class="toggle-btn" id="modeToggleBtn" aria-label="Toggle dark mode">🌙</button>
-  <header class="site-header"> <!--hadi dial header-->
-    <h1>Bienvenue dans notre boutique marocaine</h1>
+  <div class="action-buttons">
+    <button class="action-btn wishlist" id="wishlistButton">❤️ <span class="badge" id="wishlistCounter">0</span></button>
+    <button class="action-btn" id="cartButton">🛒 <span class="badge" id="cartCounter">0</span></button>
+  </div>
+  <div class="sidebar" id="wishlistSidebar">
+    <h2>Votre Wishlist</h2>
+    <div id="wishlistItems"></div>
+    <div class="sidebar-total" id="wishlistTotal"></div>
+  </div>
+  <div class="sidebar" id="cartSidebar">
+    <h2>Votre Panier</h2>
+    <div id="cartItems"></div>
+    <div class="sidebar-total">Total: <span id="cartTotal">0</span> DH</div>
+    <button id="checkoutBtn" style="width:100%;padding:10px;background:var(--button-bg);color:white;border:none;border-radius:4px;">
+      Passer la Commande
+    </button>
+  </div>
+  <header class="site-header">
+    <h1>Bienvenue dans notre boutique</h1>
     <p>Des produits authentiques sélectionnés avec soin rien que pour vous.</p>
   </header>
-  <br><br>
+  <div class="category-tabs">
+    <button class="category-tab active" data-category="all">Tous</button>
+    <button class="category-tab" data-category="food">Nourriture</button>
+    <button class="category-tab" data-category="cosmetics">Cosmétiques</button>
+    <button class="category-tab" data-category="artisanat">Artisanat</button>
+  </div>
   <div id="product-list"></div>
-  <script src="script.js"></script>
+  <script src="script.js">
 </body>
 </html>
