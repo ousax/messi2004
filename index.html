@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -36,11 +36,16 @@
   <div class="modal" id="productModal">
     <div class="modal-content">
       <button class="close-modal" id="closeModal">&times;</button>
-      <img class="modal-image" id="modalImage" src="" alt="">
+      <div class="modal-image-container" id="modalImageContainer"></div>
+      <div class="gallery-nav" id="galleryNav"></div>
       <h2 id="modalName"></h2>
       <p id="modalPrice"></p>
       <p id="modalRating"></p>
-      <button class="add-to-cart-btn" id="modalAddToCart">Ajouter au panier</button>
+      <div class="modal-description" id="modalDescription"></div>
+      <div class="modal-actions">
+        <button class="modal-btn modal-btn-primary" id="modalOrderBtn">Commander ce produit</button>
+        <button class="modal-btn modal-btn-secondary" id="modalAddToCart">Ajouter au panier</button>
+      </div>
     </div>
   </div>
   <div class="toast" id="toastNotification"></div>
