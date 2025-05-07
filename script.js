@@ -167,7 +167,7 @@
         // Show new image
         images[currentIndex].classList.add('active');
         dots[currentIndex].classList.add('active');
-      }, 2000); // Change every 2 seconds
+      }, 4000); // Change every 2 seconds
     }
     
     function showImage(index) {
