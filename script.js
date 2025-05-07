@@ -167,7 +167,7 @@
         // Show new image
         images[currentIndex].classList.add('active');
         dots[currentIndex].classList.add('active');
-      }, 4000); // Change every 2 seconds
+      }, 4000); // bdal images dproduit mora 4 s 
     }
     
     function showImage(index) {
