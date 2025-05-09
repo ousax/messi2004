@@ -23,33 +23,36 @@
         image_url: product[1],
         currency: product[2],
         description: product[3],
-        price: getRandomPrice(20, 300),
-        rating: getRandomRating()
+        price: getRandomPrice(20, 100), 
+        rating: getRandomRating(),
+        voters: getVotersRandom(50, 100)
       };
-    });
-    
-    let currentPage = 1;
-    const productsPerPage = 4;
-    let filteredProducts = [...products];
-    let cart = [];
-    let imageInterval;
-
+      
+    }); // les produits ayakhdo des prix, notes aleatoires definis par les fonctions getRandonPrice w getRandomRating 
+    console.log(products[0]);
+    let currentPage = 1; // la page actuelle
+    const productsPerPage = 4; // les produits ela hssab kola page
+    let filteredProducts = [...products]; // ndiro les produits flist bach yshal elina nbdaw n9lbo elihom
+    let cart = []; 
+    let imageInterval; 
     function getRandomPrice(min, max) {
-      return (Math.random() * (max - min) + min).toFixed(2);
+      return (Math.random() * (max - min) + min).toFixed(2); // les chiffres apres virgules homa 2 , prix (40,44 dh)
     }
-    
+    function getVotersRandom(min, max){
+      return (Math.random() * (max - min)).toFixed(0);
+    }
     function getRandomRating() {
-      return (Math.random() * 1 + 4).toFixed(1);
+      return (Math.random() * 1 + 4).toFixed(1); // par contre le 1er cas on va prendre un seul chiffre apres la , 7it note (3,4 ) 
     }
 
-    function showToast(message) {
-      const toast = document.getElementById('toastNotification');
+    function showToast(message) {// concernant message li ghadi ytl3 visituer, produit x ajouté au panier, message == argument
+      const toast = document.getElementById('toastNotification'); 
       toast.textContent = message;
       toast.style.display = 'block';
       
       setTimeout(() => {
-        toast.style.display = 'none';
-      }, 3000);
+        toast.style.display = 'none'; 
+      }, 3000);// 3 seconds
     }
     
     function renderProducts() {
@@ -60,12 +63,12 @@
       const endIndex = startIndex + productsPerPage;
       const productsToShow = filteredProducts.slice(startIndex, endIndex);
       
-      if (productsToShow.length === 0) {
+      if (productsToShow.length === 0) { // les produits entrés par les visiteur ne sont pas disponibles
         productList.innerHTML = '<p style="grid-column: 1/-1; text-align: center;">Aucun produit trouvé</p>';
         return;
       }
       
-      productsToShow.forEach(product => {
+      productsToShow.forEach(product => { // les produits a afficher , kola variable atakhode sa valeur
         const card = document.createElement("div");
         card.className = "product-card";
         card.innerHTML = `
@@ -73,15 +76,16 @@
           <div class="product-name">${product.name}</div>
           <div class="product-price">${product.price} ${product.currency}</div>
           <div class="product-rating">⭐ ${product.rating}</div>
+          <div class="product-rating">${product.voters} voters</div>
         `;
         card.addEventListener('click', () => {
-          openProductModal(product);
+          openProductModal(product); // une fois le visiteur yclicki ela chi produit l'execution dial openProductModal function ghadi t'executa  
         });
         
         productList.appendChild(card);
       });
       
-      updatePagination();
+      updatePagination(); // le numero de la page actuelle se changera
     }
 
     function openProductModal(product) {
@@ -107,20 +111,19 @@
   for (let i = 0; i < 3; i++) {
     const img = document.createElement('img');
     // Generate variation path (e.g., "/images/miel" + "_1.jpg")
-    const basePath = product.image_url.substring(0, product.image_url.lastIndexOf('.'));
-    const extension = product.image_url.substring(product.image_url.lastIndexOf('.'));
-    img.src = `${basePath}_${i+1}${extension}`;
+    const basePath = product.image_url.substring(0, product.image_url.lastIndexOf('.')); // retenir le radical 
+    const extension = product.image_url.substring(product.image_url.lastIndexOf('.'));  // retenir l'extension 'jpg'
+    img.src = `${basePath}_${i+1}${extension}`; // combinahom bach ykhdem fiha fsrc ftag img
     
-    // Fallback to main image if variation doesn't exist
-    img.onerror = function() {
+    img.onerror = function() { // ila makanoch les images b 3 dial un tel produit donc par default aykhdem bla meme image
       this.src = product.image_url;
     };
     
-    img.alt = `${product.name} - Vue ${i+1}`;
+    img.alt = `${product.name} - Vue ${i+1}`; 
     img.className = 'modal-image';
     imageContainer.appendChild(img);
     
-    // Create navigation dots
+    // creation des points verts de navigation
     const dot = document.createElement('div');
     dot.className = 'gallery-dot';
     if (i === 0) dot.classList.add('active');
@@ -136,12 +139,12 @@
       const images = document.querySelectorAll('.modal-image');
       images[0].classList.add('active');
       
-      // Start auto-rotation after 2 seconds
+      // Start auto-rotation after 4 seconds
       startImageRotation();
       
       // Set up buttons
       document.getElementById('modalOrderBtn').onclick = () => {
-        showToast(`Commande passée pour ${product.name}!`);
+        showToast(`Commande passée pour ${product.name}  ${product.price}DH!`);
         closeModal();
       };
       
@@ -212,8 +215,7 @@
     }
 
     function sortProducts() {
-      const sortValue = document.getElementById('sortSelect').value;
-      
+      const sortValue = document.getElementById('sortSelect').value; // "trier par"
       filteredProducts.sort((a, b) => {
         switch (sortValue) {
           case 'name-asc':
@@ -233,23 +235,23 @@
         }
       });
       
-      renderProducts();
+      renderProducts(); // afficher les produits  
     }
 
     function applyTheme(mode) {
       document.body.classList.remove("light-mode", "dark-mode");
       document.body.classList.add(mode);
-      document.getElementById("modeToggleBtn").textContent = mode === "dark-mode" ? "🌞" : "🌙";
+      document.getElementById("modeToggleBtn").textContent = mode === "dark-mode" ? "🌞" : "🌙"; 
       localStorage.setItem("darkMode", mode === "dark-mode");
     }
 
     function toggleDarkMode() {
-      const isDark = document.body.classList.contains("dark-mode");
+      const isDark = document.body.classList.contains("dark-mode"); // choisir entre les themes
       applyTheme(isDark ? "light-mode" : "dark-mode");
     }
 
     document.addEventListener("DOMContentLoaded", () => {
-      const prefersDark = localStorage.getItem("darkMode") === "true";
+      const prefersDark = localStorage.getItem("darkMode") === "true"; // verifier le theme deja choisi 
       applyTheme(prefersDark ? "dark-mode" : "light-mode");
 
       renderProducts();
@@ -277,4 +279,66 @@
           closeModal();
         }
       });
+      //
+     
+  function Weather() {
+    const apiKey = "397629a0f22b40ce87f71815232010"; 
+    const fallbackLocations = [
+      { name: "London", lat: 51.5074, lon: -0.1278 },
+      { name: "New York", lat: 40.7128, lon: -74.006 },
+      { name: "Tokyo", lat: 35.6895, lon: 139.6917 },
+      { name: "Paris", lat: 48.8566, lon: 2.3522 },
+      { name: "Sydney", lat: -33.8688, lon: 151.2093 }
+    ];
+    const conditionMap = {
+      "Sunny": { fr: "Ensoleillé", icon: "☀️" },
+      "Partly cloudy": { fr: "Partiellement nuageux", icon: "⛅" },
+      "Cloudy": { fr: "Nuageux", icon: "☁️" },
+      "Overcast": { fr: "Couvert", icon: "☁️" },
+      "Mist": { fr: "Brume", icon: "🌫️" },
+      "Rain": { fr: "Pluie", icon: "🌧️" },
+      "Light rain": { fr: "Pluie légère", icon: "🌦️" },
+      "Heavy rain": { fr: "Forte pluie", icon: "🌧️" },
+      "Snow": { fr: "Neige", icon: "❄️" },
+      "Thunderstorm": { fr: "Orage", icon: "⛈️" }
+    };
+    const fetchWeather = async (lat, lon) => {
+      try {
+        const response = await fetch(`https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${lat},${lon}&aqi=no`);
+        const data = await response.json();
+        const temp = Math.round(data.current.temp_c);
+        const rawCondition = data.current.condition.text;
+        const translated = conditionMap[rawCondition] || { fr: rawCondition, icon: "" };
+
+        const header = document.querySelector("header");
+        if (header) {
+          const weatherEl = document.createElement("div");
+          weatherEl.textContent = `Météo : ${temp}°C, ${translated.icon} ${translated.fr}`;
+          weatherEl.style.marginLeft = "auto";
+          weatherEl.style.padding = "0 10px";
+          weatherEl.style.fontWeight = "bold";
+          header.appendChild(weatherEl);
+        }
+      } catch (error) {
+        console.error("Weather fetch failed:", error);
+      }
+    };
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          fetchWeather(latitude, longitude);
+        },
+        () => {
+          const random = fallbackLocations[Math.floor(Math.random() * fallbackLocations.length)];
+          fetchWeather(random.lat, random.lon);
+        }
+      );
+    } else {
+      const random = fallbackLocations[Math.floor(Math.random() * fallbackLocations.length)];
+      fetchWeather(random.lat, random.lon);
+    }
+  }
+     Weather();
     });
