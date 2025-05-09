@@ -29,7 +29,7 @@
     });
     
     let currentPage = 1;
-    const productsPerPage = 5;
+    const productsPerPage = 4;
     let filteredProducts = [...products];
     let cart = [];
     let imageInterval;
