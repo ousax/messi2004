@@ -21,11 +21,12 @@
   <input type="text" name="adresse" required><br>
 
   <label>Email:</label>
-  <input type="email" name="email" required><br>
-
+  <input type="email" name="email" required>
+  <div hidden style='color: red; font-size: 15px; align-items: center; font-weight: bolder;' id="error">Email non autorisé. Utilisez Gmail, Yahoo, Proton ou un domaine .edu</div>
+  <br>
   <label>Téléphone:</label>
-  <input type="tel" name="phone" required><br>
-
+  <input type="tel" name="phone" required>
+    <div hidden style='color: red; font-size: 15px; align-items: center; font-weight: bolder;' id="error_tel">Numéro de téléphone invalide. Entrez entre 9 et 15 chiffres.</div><br>
   <label>Moyen de paiement:</label><br>
   <input type="checkbox" id="paypalCheckbox"> PayPal<br>
   <input type="checkbox" id="cardCheckbox"> Carte Bancaire<br>
@@ -34,7 +35,14 @@
     <label>Email PayPal:</label>
     <input type="email" name="paypalEmail"><br>
   </div>
-
+  <div id="cardFields" class="hidden">
+    <label>Numéro de carte:</label><br>
+    <input type="text" name="cardNumber" required><br>
+    <label>Date d'expiration</label> 
+    <input type="text" name="expiration" placeholder="MM/AA" required><br>
+    <label>CVV:</label><br>
+    <input type="text" name="cvv" required>
+  </div>
   <button type="submit">Soumettre</button>
   <br><br>
     <button id="downloadPDF" style="display: none; background-color: aquamarine;color: black;">📄 Télécharger vos informations en PDF</button> 
@@ -48,44 +56,89 @@
     const price = window.location.href.split("p=")[1];
     const product_name = window.location.href.split("n=")[1].split("&p=")[0];
     document.getElementById("produit_choisi").innerHTML =
-      'Produit choisi: <strong>' + decodeURI(product_name) + '<br> pour le prix : ' + price + ' DH</strong>';
+      'Produit choisi:<br> <strong>' + decodeURI(product_name) + '<br>Prix : ' + price + ' DH</strong>';
   </script>
   <script>
   const form = document.getElementById("orderForm");
   const downloadPDF = document.getElementById("downloadPDF");
-
-  let formDataText = '';
-
-  // Show or hide PayPal field
-  document.getElementById("paypalCheckbox").addEventListener("change", function() {
-    document.getElementById("paypalFields").classList.toggle("hidden", !this.checked);
-    if (this.checked) document.getElementById("cardCheckbox").checked = false;
-  });
-
-  document.getElementById("cardCheckbox").addEventListener("change", function() {
-    if (this.checked) {
-      document.getElementById("paypalCheckbox").checked = false;
-      document.getElementById("paypalFields").classList.add("hidden");
-    }
-  });
-
-  
+    let formDataText = '';
+    // afficher ou faire dispariatre les cases lorsque on click une telle option
+    paypalCheckbox.addEventListener('change', () => { 
+      if (paypalCheckbox.checked) {
+        paypalFields.classList.remove('hidden');
+        cardCheckbox.checked = false;
+        cardFields.classList.add('hidden');
+      } else {
+        paypalFields.classList.add('hidden');
+      }
+    });  
+    cardCheckbox.addEventListener('change', () => {
+      if (cardCheckbox.checked) {
+        cardFields.classList.remove('hidden');
+        paypalCheckbox.checked = false;
+        paypalFields.classList.add('hidden');
+      } else {
+        cardFields.classList.add('hidden');
+      }
+    }); // fin dialha 
     form.addEventListener("submit", function(event) {
     event.preventDefault();
-
     const nom = form.querySelector('[name="nom"]').value;
     const adresse = form.querySelector('[name="adresse"]').value;
     const email = form.querySelector('[name="email"]').value;
     const phone = form.querySelector('[name="phone"]').value;
     const paypalEmail = form.querySelector('[name="paypalEmail"]')?.value || 'N/A';
+    const num_card = form.querySelector('[name="cardNumber"]')?.value || 'N/A';
+    const expirationDate  = form.querySelector('[name="expiration"]')?.value || 'N/A';
+    const cvv = form.querySelector('[name="cvv"]')?.value || 'N/A';
     const paymentMethod = document.getElementById("paypalCheckbox").checked
       ? "PayPal"
       : document.getElementById("cardCheckbox").checked
       ? "Carte Bancaire"
-      : "Non spécifié";
-      const date = new Date().toJSON();
-      const tn = `FCA_SHOP${(Math.random() * 233494 + 334).toFixed(0)}`;
-    formDataText = `
+      : "Non spécifié"; // bach ghadi ykhless ??
+      //console.log(cvv+"  "+num_card+" "+expirationDate);
+    function isValidPhone(phone) {
+      return /^\+?\d{9,15}$/.test(phone);
+    }
+    function isValidEmail(email) {
+    const allowedDomains = ["gmail.com", "yahoo.com", "proton.me", "protonmail.com"];
+    const emailParts = email.split("@");
+    if (emailParts.length !== 2) return false;
+    const domain = emailParts[1].toLowerCase();
+    return (
+      allowedDomains.includes(domain) ||
+      domain.endsWith(".edu")
+    );
+    }
+    if (!isValidEmail(email)) {
+      document.getElementById("error").hidden=false;
+     // alert("Email non autorisé. Utilisez Gmail, Yahoo, Proton ou un domaine .edu.");
+    return;
+  }
+    else{
+      document.getElementById("error").hidden=true;
+    }
+    if (!isValidPhone(phone)) {
+      document.getElementById("error_tel").hidden=false;
+    //alert("Numéro de téléphone invalide. Entrez entre 9 et 15 chiffres.");
+    return;
+  }
+    else{
+      document.getElementById("error_tel").hidden=true;
+    }
+      const date = new Date().toJSON(); 
+      const tn = `FCA_SHOP_${(Math.random() * 233494 + 334).toFixed(0)}`;
+      if(paymentMethod==="Carte Bancaire" && (cvv!=""&&num_card!=""&&expirationDate!="")){
+        let informations_paiement = 
+        `Numéro de carte:: ${num_card}\nDate d'expiration: ${expirationDate}\ncvv: ${cvv}`
+      }
+      else{
+        let informations_paiement =  `Email Paypal: ${paypalEmail}`
+      }
+      const INFOS = (paymentMethod==="Carte Bancaire" && (cvv!=""&&num_card!=""&&expirationDate!="")) ? `Numéro de carte:: ${num_card}\nDate d'expiration: ${expirationDate}\ncvv: ${cvv}` : `Email Paypal: ${paypalEmail}`
+      // ligne fo9ania verify moyen de paiement 
+      //console.log(INFOS);
+      formDataText = `
         Ticket FCA SHOP
         Transaction N°: ${tn}
         Date: ${date}
@@ -93,11 +146,11 @@
         Adresse: ${adresse}
         Email: ${email}
         Téléphone: ${phone}
-        Paiement: ${paymentMethod}
-        Email PayPal: ${paypalEmail}
+        Mode de Paiement: ${paymentMethod}
+        ${INFOS}
         Merci Pour Votre Visite.
     `.trim();
-    downloadPDF.style.display = "block"; // Show options
+    downloadPDF.style.display = "block"; // afficher le button telecharger dial fichier pdf li tgenera
   });
   downloadPDF.addEventListener("click", function() {
     async function generateStyledPDF(formDataText) {
@@ -107,20 +160,16 @@
     doc.setFont("helvetica", "bold");
     doc.setFontSize(20);
     doc.setTextColor(0, 102, 204);
-    doc.text("FCA SHOP - Confirmation de Commande", 10, 20);
-    // Date
+    doc.text("FCA SHOP - Reçu de transaction", 10, 20);
     const now = new Date().toLocaleString("fr-FR");
     doc.setFontSize(10);
     doc.setTextColor(100);
     doc.text(`Date: ${now}`, 150, 20);
-    // Draw line
     doc.setDrawColor(0);
     doc.line(10, 25, 200, 25);
-    // Section: Details
     doc.setFontSize(14);
     doc.setTextColor(33, 33, 33);
     doc.text("Détails du client:", 10, 35);
-    // Add content line-by-line with spacing
     const lines = formDataText.split('\n');
     doc.setFont("helvetica", "normal");
     doc.setFontSize(12);
@@ -129,19 +178,17 @@
       doc.text(line.trim(), 15, y);
       y += 8;
     }
-    // Optional: Draw box around the details
     doc.setDrawColor(220);
     doc.rect(10, 30, 190, y - 30);
-    // Optional QR code image
     // Footer
     doc.setFontSize(10);
     doc.setTextColor(120);
     doc.text("Merci pour votre commande !", 10, 280);
-    // Save the PDF
-    doc.save("commande_confirmee.pdf");
+    doc.save(`commande_confirmee_${now}.pdf`);
   }
   generateStyledPDF(formDataText);
-  window.location.href = "index.html";
+      window.location.href = "index.html" // redirect lhomepage apres l'inpression dial reçu
+  // vider dok les cases 
   });
 </script>
 </body>
