@@ -33,6 +33,7 @@
       font-family: Arial, sans-serif;
       margin: 0;
       transition: background-color var(--transition-speed), color var(--transition-speed);
+      
     }
 
     .toggle-btn {
@@ -50,6 +51,7 @@
     .toggle-btn:hover {
       transform: scale(1.1);
     }
+    
 
     .site-header {
       text-align: center;
@@ -84,7 +86,8 @@
 
     .search-bar {
       flex-grow: 1;
-      max-width: 400px;
+      max-width: auto;
+      
     }
 
     .search-bar input {
@@ -344,7 +347,16 @@
       display: none;
       animation: slideIn 0.3s, fadeOut 0.5s 2.5s forwards;
     }
-
+    /*Commander form*/
+    /* Checkout Modal Styles */
+    /* passer la commande w 3mr fileds */
+    #orderForm {
+      margin-top: 20px;
+      border: 1px solid #ccc;
+      padding: 15px;
+      max-width: 400px;
+      background: #f9f9f9;
+    }
     @keyframes slideIn {
       from { top: -50px; opacity: 0; }
       to { top: 20px; opacity: 1; }
