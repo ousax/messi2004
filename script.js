@@ -25,7 +25,7 @@
         description: product[3],
         price: getRandomPrice(20, 100), 
         rating: getRandomRating(),
-        voters: getVotersRandom(50, 100)
+        voters: getVotersRandom() // ankhdmo b17 dial voters si getRandomRating  < 10 
       };
       
     }); // les produits ayakhdo des prix, notes aleatoires definis par les fonctions getRandonPrice w getRandomRating 
@@ -34,21 +34,31 @@
     const productsPerPage = 4; // les produits ela hssab kola page
     let filteredProducts = [...products]; // ndiro les produits flist bach yshal elina nbdaw n9lbo elihom
     let cart = []; 
+    //let defaultVoters = 15 // ila genera lina voters < 3 donc nakhdo 15 comme base
     let imageInterval; 
     function getRandomPrice(min, max) {
       return (Math.random() * (max - min) + min).toFixed(2); // les chiffres apres virgules homa 2 , prix (40,44 dh)
     }
-    function getVotersRandom(min, max){
-      return (Math.random() * (max - min)).toFixed(0);
+    function getVotersRandom(){
+      const max = 100;
+      const min = 50;
+      let voters = (Math.random() * (max - min)).toFixed(0);
+      if(voters < 10){
+         const voters = 17;
+      }
+      return voters;
     }
     function getRandomRating() {
       return (Math.random() * 1 + 4).toFixed(1); // par contre le 1er cas on va prendre un seul chiffre apres la , 7it note (3,4 ) 
     }
 
     function showToast(message) {// concernant message li ghadi ytl3 visituer, produit x ajouté au panier, message == argument
+      
       const toast = document.getElementById('toastNotification'); 
       toast.textContent = message;
       toast.style.display = 'block';
+      // modify had partie bach ytl3 form a renseigner pour les gens qui veulent vraiment acheter ce produit
+
       
       setTimeout(() => {
         toast.style.display = 'none'; 
@@ -147,15 +157,20 @@
         showToast(`Commande passée pour ${product.name}  ${product.price}DH!`);
         closeModal();
       };
-      
+      document.getElementById("modalOrderBtn").onclick = () => {
+        closeModal();
+        //document.getElementById("product-list").hidden = true;
+        //document.getElementById("orderForm").hidden = false; // hna form pour passer la commande va apparaitre 
+        //document.getElementById("produit_choisi").innerHTML = `Produit choisi: ${product.name}`;
+        //window.open(`buy1.html?n=${product.name}&p=${product.price}`);
+        window.location.href = `buy1.html?n=${product.name}&p=${product.price}`
+      }
       document.getElementById('modalAddToCart').onclick = () => {
         addToCart(product);
         closeModal();
       };
-      
       modal.classList.add('show');
     }
-    
     function startImageRotation() {
       let currentIndex = 0;
       const images = document.querySelectorAll('.modal-image');
@@ -282,8 +297,8 @@
       //
      
   function Weather() {
-    const apiKey = "397629a0f22b40ce87f71815232010"; 
-    const fallbackLocations = [
+    const apiKey = atob("Mzk3NjI5YTBmMjJiNDBjZTg3ZjcxODE1MjMyMDEw");
+    const fallbackLocations = [ // si le visiteur n'autorise pas l'acces a son localisation , utiliser des localisations aleatoires 
       { name: "London", lat: 51.5074, lon: -0.1278 },
       { name: "New York", lat: 40.7128, lon: -74.006 },
       { name: "Tokyo", lat: 35.6895, lon: 139.6917 },
@@ -313,7 +328,7 @@
         const header = document.querySelector("header");
         if (header) {
           const weatherEl = document.createElement("div");
-          weatherEl.textContent = `Météo : ${temp}°C, ${translated.icon} ${translated.fr}`;
+          weatherEl.textContent = `Météo: ${temp}°C, ${translated.icon} ${translated.fr}`;
           weatherEl.style.marginLeft = "auto";
           weatherEl.style.padding = "0 10px";
           weatherEl.style.fontWeight = "bold";
@@ -340,5 +355,5 @@
       fetchWeather(random.lat, random.lon);
     }
   }
-     Weather();
+      Weather();
     });
