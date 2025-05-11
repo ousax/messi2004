@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Commander le produit</title>
+  <link rel="stylesheet" href="buy.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+  <header>
+    <h1>vous avez fait le bon choix </h1>
+  </header>
+
+  <main>
+    <form id="orderForm">
+  <label id="produit_choisi">Produit choisi: </label><br><br>
+  <input type="text" name="nom" required><br>
+
+  <label>Adresse:</label>
+  <input type="text" name="adresse" required><br>
+
+  <label>Email:</label>
+  <input type="email" name="email" required><br>
+
+  <label>Téléphone:</label>
+  <input type="tel" name="phone" required><br>
+
+  <label>Moyen de paiement:</label><br>
+  <input type="checkbox" id="paypalCheckbox"> PayPal<br>
+  <input type="checkbox" id="cardCheckbox"> Carte Bancaire<br>
+
+  <div id="paypalFields" class="hidden">
+    <label>Email PayPal:</label>
+    <input type="email" name="paypalEmail"><br>
+  </div>
+
+  <button type="submit">Soumettre</button>
+  <br><br>
+    <button id="downloadPDF" style="display: none; background-color: aquamarine;color: black;">📄 Télécharger vos informations en PDF</button> 
+</form>
+</div>
+  </main>
+  <footer>
+    <p>&copy; 2025 FCA shop. Tous droits réservés.</p>
+  </footer>
+  <script>
+    const price = window.location.href.split("p=")[1];
+    const product_name = window.location.href.split("n=")[1].split("&p=")[0];
+    document.getElementById("produit_choisi").innerHTML =
+      'Produit choisi: <strong>' + decodeURI(product_name) + '<br> pour le prix : ' + price + ' DH</strong>';
+  </script>
+  <script>
+  const form = document.getElementById("orderForm");
+  const downloadPDF = document.getElementById("downloadPDF");
+
+  let formDataText = '';
+
+  // Show or hide PayPal field
+  document.getElementById("paypalCheckbox").addEventListener("change", function() {
+    document.getElementById("paypalFields").classList.toggle("hidden", !this.checked);
+    if (this.checked) document.getElementById("cardCheckbox").checked = false;
+  });
+
+  document.getElementById("cardCheckbox").addEventListener("change", function() {
+    if (this.checked) {
+      document.getElementById("paypalCheckbox").checked = false;
+      document.getElementById("paypalFields").classList.add("hidden");
+    }
+  });
+
+  
+    form.addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const nom = form.querySelector('[name="nom"]').value;
+    const adresse = form.querySelector('[name="adresse"]').value;
+    const email = form.querySelector('[name="email"]').value;
+    const phone = form.querySelector('[name="phone"]').value;
+    const paypalEmail = form.querySelector('[name="paypalEmail"]')?.value || 'N/A';
+    const paymentMethod = document.getElementById("paypalCheckbox").checked
+      ? "PayPal"
+      : document.getElementById("cardCheckbox").checked
+      ? "Carte Bancaire"
+      : "Non spécifié";
+      const date = new Date().toJSON();
+      const tn = `FCA_SHOP${(Math.random() * 233494 + 334).toFixed(0)}`;
+    formDataText = `
+        Ticket FCA SHOP
+        Transaction N°: ${tn}
+        Date: ${date}
+        Nom: ${nom}
+        Adresse: ${adresse}
+        Email: ${email}
+        Téléphone: ${phone}
+        Paiement: ${paymentMethod}
+        Email PayPal: ${paypalEmail}
+        Merci Pour Votre Visite.
+    `.trim();
+    downloadPDF.style.display = "block"; // Show options
+  });
+  downloadPDF.addEventListener("click", function() {
+    async function generateStyledPDF(formDataText) {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    // Store title
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(20);
+    doc.setTextColor(0, 102, 204);
+    doc.text("FCA SHOP - Confirmation de Commande", 10, 20);
+    // Date
+    const now = new Date().toLocaleString("fr-FR");
+    doc.setFontSize(10);
+    doc.setTextColor(100);
+    doc.text(`Date: ${now}`, 150, 20);
+    // Draw line
+    doc.setDrawColor(0);
+    doc.line(10, 25, 200, 25);
+    // Section: Details
+    doc.setFontSize(14);
+    doc.setTextColor(33, 33, 33);
+    doc.text("Détails du client:", 10, 35);
+    // Add content line-by-line with spacing
+    const lines = formDataText.split('\n');
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(12);
+    let y = 45;
+    for (const line of lines) {
+      doc.text(line.trim(), 15, y);
+      y += 8;
+    }
+    // Optional: Draw box around the details
+    doc.setDrawColor(220);
+    doc.rect(10, 30, 190, y - 30);
+    // Optional QR code image
+    // Footer
+    doc.setFontSize(10);
+    doc.setTextColor(120);
+    doc.text("Merci pour votre commande !", 10, 280);
+    // Save the PDF
+    doc.save("commande_confirmee.pdf");
+  }
+  generateStyledPDF(formDataText);
+  });
+</script>
+</body>
+</html>
