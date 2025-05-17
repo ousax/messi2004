@@ -52,11 +52,33 @@
   <footer>
     <p>&copy; 2025 FCA shop. Tous droits réservés.</p>
   </footer>
-  <script>
-    const price = window.location.href.split("p=")[1];
-    const product_name = window.location.href.split("n=")[1].split("&p=")[0];
-    document.getElementById("produit_choisi").innerHTML =
-      'Produit choisi:<br> <strong>' + decodeURI(product_name) + '<br>Prix : ' + price + ' DH</strong>';
+  <script> // sanitize hadchi 
+    //const price = window.location.href.split("p=")[1];
+    //const product_name = window.location.href.split("n=")[1].split("&p=")[0];
+    //document.getElementById("produit_choisi").innerHTML =
+      //'Produit choisi:<br> <strong>' + decodeURI(product_name) + '<br>Prix : ' + price + ' DH</strong>';
+    const urlParams = new URLSearchParams(window.location.search);
+    const price = urlParams.get("p");
+    const product_name = urlParams.get("n");
+    
+    if (price && product_name) {
+      const safeProductName = document.createTextNode(decodeURIComponent(product_name));
+      const safePrice = document.createTextNode(price + ' DH');
+    
+      const container = document.getElementById("produit_choisi");
+      container.innerHTML = ''; // Clear existing content
+    
+      const label = document.createElement('div');
+      label.textContent = 'Produit choisi:';
+      container.appendChild(label);
+    
+      const strong = document.createElement('strong');
+      strong.appendChild(safeProductName);
+      strong.appendChild(document.createElement('br'));
+      strong.appendChild(safePrice);
+    
+      container.appendChild(strong);
+    }
   </script>
   <script>
   const form = document.getElementById("orderForm");
