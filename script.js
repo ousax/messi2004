@@ -298,7 +298,7 @@
      
   function Weather() {
     const apiKey = atob("Mzk3NjI5YTBmMjJiNDBjZTg3ZjcxODE1MjMyMDEw");
-    const fallbackLocations = [ // si le visiteur n'autorise pas l'acces a son localisation , utiliser des localisations aleatoires 
+    const fallbackLocations = [ // si le visiteur n'autorise pas l'acces à sa localisation , utiliser des localisations aleatoires 
       { name: "London", lat: 51.5074, lon: -0.1278 },
       { name: "New York", lat: 40.7128, lon: -74.006 },
       { name: "Tokyo", lat: 35.6895, lon: 139.6917 },
