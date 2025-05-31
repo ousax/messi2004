@@ -51,8 +51,41 @@
     .toggle-btn:hover {
       transform: scale(1.1);
     }
+    .panierBtn{ /*button du panier*/ 
+      background-color: var(--bg-color); /*pour le dark mode*/
+      color: var(--text-color); /*pour le dark mode*/
+      position: fixed;
+      top: 1rem;
+      left: 1rem;
+      background: transparent;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      z-index: 1000;
+      transition: transform 0.3s ease;
+    }
+    .panierBtn:hover {
+      transform: scale(1.1);
+    }
+    #numberItemsCart{
+      color: black;
+      position: fixed;
+      left: 6rem;
+      background: transparent;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      z-index: 1000;
+      transition: transform 0.3s ease;
+      border-radius: 10px;
+      background-color: #e2e2e2;
+      padding: 5px;
+      margin: 5px;
+    }
+    #numberItemsCart:hover{
+      top: 1rem;
+    }
     
-
     .site-header {
       text-align: center;
       padding: 2rem 1rem 1rem;
@@ -91,12 +124,13 @@
     }
 
     .search-bar input {
-      width: 100%;
+      width: 95%;
       padding: 0.5rem;
-      border-radius: 20px;
+      /*border-radius: 20px;*/
       border: 1px solid #ddd;
       font-size: 1rem;
       transition: all var(--transition-speed);
+      align-items: center;
     }
 
     .search-bar input:focus {
@@ -112,7 +146,7 @@
 
     .sort-options select {
       padding: 0.5rem;
-      border-radius: 20px;
+      /*border-radius: 20px;*/
       border: 1px solid #ddd;
       background-color: var(--card-bg);
       color: var(--text-color);
@@ -255,6 +289,7 @@
       width: 100%;
       height: 300px;
       margin-bottom: 1rem;
+      
     }
 
     .modal-image {
@@ -262,13 +297,14 @@
       width: 100%;
       height: 100%;
       object-fit: contain;
-      border-radius: 5px;
       opacity: 0;
       transition: opacity 0.5s ease;
+      
     }
 
     .modal-image.active {
       opacity: 1;
+      border-radius: 50px;
     }
 
     /* Gallery navigation */
@@ -277,6 +313,7 @@
       justify-content: center;
       gap: 10px;
       margin-bottom: 1rem;
+      
     }
 
     .gallery-dot {
