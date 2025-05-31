@@ -29,11 +29,11 @@
       };
       
     }); // les produits ayakhdo des prix, notes aleatoires definis par les fonctions getRandonPrice w getRandomRating 
-    console.log(products[0]);
     let currentPage = 1; // la page actuelle
-    const productsPerPage = 4; // les produits ela hssab kola page
+    const productsPerPage = 8; // les produits ela hssab kola page
     let filteredProducts = [...products]; // ndiro les produits flist bach yshal elina nbdaw n9lbo elihom
-    let cart = []; 
+    let cart = [];
+    console.log(cart.length===0 ? "Le panier est vide" : "Le panier n'est pas vide");
     //let defaultVoters = 15 // ila genera lina voters < 3 donc nakhdo 15 comme base
     let imageInterval; 
     function getRandomPrice(min, max) {
@@ -51,7 +51,7 @@
     function getRandomRating() {
       return (Math.random() * 1 + 4).toFixed(1); // par contre le 1er cas on va prendre un seul chiffre apres la , 7it note (3,4 ) 
     }
-
+    
     function showToast(message) {// concernant message li ghadi ytl3 visituer, produit x ajouté au panier, message == argument
       
       const toast = document.getElementById('toastNotification'); 
@@ -82,7 +82,7 @@
         const card = document.createElement("div");
         card.className = "product-card";
         card.innerHTML = `
-          <img src="${product.image_url}" class="product-image" alt="${product.name}">
+          <img src="${product.image_url}" class="product-image"  alt="${product.name}">
           <div class="product-name">${product.name}</div>
           <div class="product-price">${product.price} ${product.currency}</div>
           <div class="product-rating">⭐ ${product.rating}</div>
@@ -117,7 +117,7 @@
       document.getElementById('modalDescription').textContent = product.description;
       
       // Create 3 identical images (hidden by default)
-          // Create 3 image variations (e.g., "/images/miel_1.jpg", "/images/miel_2.jpg")
+          // Create 3 image variations ("/images/miel_1.jpg", "/images/miel_2.jpg")
   for (let i = 0; i < 3; i++) {
     const img = document.createElement('img');
     // Generate variation path (e.g., "/images/miel" + "_1.jpg")
@@ -137,7 +137,7 @@
     const dot = document.createElement('div');
     dot.className = 'gallery-dot';
     if (i === 0) dot.classList.add('active');
-    dot.addEventListener('click', () => {
+    dot.addEventListener("click", () => {
       showImage(i);
       clearInterval(imageInterval);
       startImageRotation();
@@ -208,11 +208,37 @@
       document.getElementById('productModal').classList.remove('show');
     }
 
-    function addToCart(product) {
-      cart.push(product);
+    function addToCart(product) { // modify it to add elements to the cart and to change the the number of items added
+      //cart.push(product);
       showToast(`${product.name} ajouté au panier!`);
+      cart.push([product.name, product.price, product.image_url]);
+      console.log(`Le panier contient ${cart.length} élément(s)`);
+      let panierItems = document.getElementById("numberItemsCart");
+      panierItems.innerHTML=`<strong style='font-size: 10px; color:green' class='numberItemsCart'>${cart.length}</strong>`;
     }
-
+    function DisplaySum(){
+      var NamesPrices = cart.map(elements => [elements[0], parseFloat(elements[1]), , ,]);
+      var SumElements = cart.map(element => parseFloat(element[1]));//`Price: ${element[1]}`)); // les elements dans le panier
+      NamesPrices.forEach(element => {
+        names = element[0];
+        prices = element[1]
+        image = element[2]
+        console.log(`Nom du produit: ${names} \nPrix du produit: ${prices}`);
+        
+      });
+      let sum = 0;
+      for (let ele = 0; ele < SumElements.length; ele++) {
+        sum += SumElements[ele];
+        //console.log(sum);
+      }
+      sum = sum.toFixed(2);
+      if(cart.length===0){
+        alert("Votre panier est vide");
+      }
+      else{
+        alert(`La somme d'éléments choisis: ${sum} DHS`);
+      }
+          }
     function updatePagination() {
       const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
       document.getElementById('pageInfo').textContent = `Page ${currentPage} sur ${totalPages}`;
@@ -298,7 +324,7 @@
      
   function Weather() {
     const apiKey = atob("Mzk3NjI5YTBmMjJiNDBjZTg3ZjcxODE1MjMyMDEw");
-    const fallbackLocations = [ // si le visiteur n'autorise pas l'acces à sa localisation , utiliser des localisations aleatoires 
+    const fallbackLocations = [ // si le visiteur n'autorise pas l'acces a son localisation , utiliser des localisations aleatoires 
       { name: "London", lat: 51.5074, lon: -0.1278 },
       { name: "New York", lat: 40.7128, lon: -74.006 },
       { name: "Tokyo", lat: 35.6895, lon: 139.6917 },
