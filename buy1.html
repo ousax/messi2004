@@ -39,9 +39,9 @@
     <label>Numéro de carte:</label><br>
     <input type="text" name="cardNumber" required><br>
     <label>Date d'expiration</label> 
-    <input type="text" name="expiration" placeholder="MM/AA" required><br>
+    <input type="text" name="expiration" placeholder="MM/AA" maxlength="4" required><br>
     <label>CVV:</label><br>
-    <input type="text" name="cvv" required>
+    <input type="text" name="cvv" maxlength="4" required>
   </div>
   <button type="submit">Soumettre</button>
   <br><br>
@@ -52,12 +52,12 @@
   <footer>
     <p>&copy; 2025 FCA shop. Tous droits réservés.</p>
   </footer>
-  <script> // sanitize hadchi 
+  <script> // hada code ancien vuln to xss
     //const price = window.location.href.split("p=")[1];
     //const product_name = window.location.href.split("n=")[1].split("&p=")[0];
     //document.getElementById("produit_choisi").innerHTML =
       //'Produit choisi:<br> <strong>' + decodeURI(product_name) + '<br>Prix : ' + price + ' DH</strong>';
-    const urlParams = new URLSearchParams(window.location.search);
+    const urlParams = new URLSearchParams(window.location.search); // best practice
     const price = urlParams.get("p");
     const product_name = urlParams.get("n");
     
@@ -79,11 +79,16 @@
     
       container.appendChild(strong);
     }
+    else{
+      // if the user visited the buy1 page without chosing a product alert and return shome
+      alert("Veuillez choisir un produit!");
+      window.location.href = "index.html";
+    }
   </script>
   <script>
   const form = document.getElementById("orderForm");
   const downloadPDF = document.getElementById("downloadPDF");
-    let formDataText = '';
+  let formDataText = '';
     // afficher ou faire dispariatre les cases lorsque on click une telle option
     paypalCheckbox.addEventListener('change', () => { 
       if (paypalCheckbox.checked) {
@@ -119,7 +124,7 @@
       ? "Carte Bancaire"
       : "Non spécifié"; // bach ghadi ykhless ??
       //console.log(cvv+"  "+num_card+" "+expirationDate);
-    function isValidPhone(phone) {
+      function isValidPhone(phone) {
       return /^\+?\d{9,15}$/.test(phone);
     }
     function isValidEmail(email) {
@@ -164,6 +169,7 @@
         Ticket FCA SHOP
         Transaction N°: ${tn}
         Date: ${date}
+        Produit Choisi: ${product_name}
         Nom: ${nom}
         Adresse: ${adresse}
         Email: ${email}
